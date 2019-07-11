@@ -31,6 +31,10 @@ jobs:
             cd ../
             pwd
             ls -al
+            cd target
+            pwd
+            echo "In target directory"
+            ls -al
       - run:
           name: Zip Artifact
           command: |
