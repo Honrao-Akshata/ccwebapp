@@ -41,8 +41,8 @@ jobs:
             echo "current build number is ${CIRCLE_BUILD_NUM}"
             pwd
             mkdir -p codedeploy_artifact
-            cd codedeploy_artifact
             zip -r csye6225-webapp-${CIRCLE_BUILD_NUM}.zip webapp/librarymanagementsystem/target/librarymanagementsystem-0.0.1-SNAPSHOT.war infrastructure/aws/codedeploy/*.sh appspec.yml
+            cd codedeploy_artifact
             ls -al
             pwd
             cd ..
