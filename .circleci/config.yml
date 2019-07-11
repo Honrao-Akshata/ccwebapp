@@ -10,14 +10,18 @@ jobs:
       - checkout
       - run:
           name: Install packages
-          command: sudo apt-get update && sudo apt-get install wget zip unzip -y
+          command: |
+            sudo apt-get update && sudo apt-get install wget zip unzip -y
+            sudo apt install openjdk-8-jdk
+            sudo apt install maven
+            mvn -version
       - run:
           name: Install awscli
           command: sudo pip install awscli
       - run:
           name: Build Artifact
           command: |
-            cd webapp
+            cd webapp/librarymanagementsystem
             pwd
             ls -al
             mvn clean install
@@ -33,14 +37,19 @@ jobs:
             pwd
             mkdir -p codedeploy_artifact
             cd codedeploy_artifact
-            cp ../infrastructure/aws/codedeploy/*.sh .
-            cp ../*.yml .
-            cp ../webapp/target/webApp-0.0.1-SNAPSHOT.jar .
-            cp ../webapp/src/main/resources/*.properties .
-            zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip .
-            rm *.yml *.sh *.properties *.jar
+            zip -r csye6225-webapp-${CIRCLE_BUILD_NUM}.zip webapp/librarymanagementsystem/target/librarymanagementsystem-0.0.1-SNAPSHOT.war infrastructure/aws/codedeploy/*.sh appspec.yml
             ls -al
             pwd
             cd ..
             pwd
             ls -al
+      - run:
+          name: Upload Artifact to S3
+          command: aws s3 sync ./codedeploy_artifact s3://${S3_BUCKET_NAME}
+      - run:
+          name: Deploy artifact to ec2 instance
+          command: |
+            aws deploy create-deployment \
+            --application-name csye6225-webapp \
+            --deployment-group-name csye6225-webapp-deployment \
+            --s3-location bucket=${S3_BUCKET_NAME},bundleType=zip,key=csye6225-webapp-${CIRCLE_BUILD_NUM}.zip
