@@ -18,7 +18,10 @@ jobs:
             mvn -version
       - run:
           name: Install awscli
-          command: sudo pip install awscli
+          command: |
+          sudo pip install awscli
+          mkdir test-results
+          ls -la
       - store_test_results:
           path: test-results
       - run:
