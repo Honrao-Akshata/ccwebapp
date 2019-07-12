@@ -1,21 +1,15 @@
 #!/bin/sh
-#shell script to create AWS application infrastructures
+#shell script to create AWS network infrastructures
 
- help_me()
-{
-    echo "Usage:-"
-    echo "$0 <stack name> "
-    exit
-}
 STACK_NAME=$1
 
 if [ -z "$1" ]
   then
     echo "No STACK_NAME argument supplied"
-    help_me
+    exit 1
 fi
 
-echo "Deleting Application stack..."
+echo "Deleting the stack..."
 
 aws cloudformation delete-stack --stack-name $STACK_NAME
 
