@@ -3,7 +3,7 @@ os: linux
 
 
 files:
-  - source: /ccwebapp/webapp/librarymanagementsystem/target/librarymanagementsystem-0.0.1-SNAPSHOT.war
+  - source: ./webapp/librarymanagementsystem/target/librarymanagementsystem-0.0.1-SNAPSHOT.war
     destination: /opt/tomcat/latest/webapps
   - source: ./infrastructure/aws/codedeploy/afterInstall.sh
     destination: /home/centos
@@ -11,10 +11,10 @@ files:
     destination: /home/centos
 hooks:
   AfterInstall:
-   - location: ./afterInstall.sh
+   - location: ./infrastructure/aws/codedeploy/afterInstall.sh
      timeout: 180
      runas: centos
   ApplicationStart:
-   - location: ./applicationStart.sh
+   - location: ./infrastructure/aws/codedeploy/applicationStart.sh
      timeout: 180
      runas: centos
