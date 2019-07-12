@@ -22,29 +22,29 @@ jobs:
       - run:
           name: Build Artifact
           command: |
+             pwd
+            ls
             cd webapp/librarymanagementsystem
+            ./mvnw clean package
             pwd
             ls -al
-            mvn clean install
-            cd target/
-            ls -al
-            cd ../
             pwd
-            ls -al
-            cd target
-            pwd
-            echo "In target directory"
-            ls -al
       - run:
           name: Zip Artifact
           command: |
-            echo "current build number is ${CIRCLE_BUILD_NUM}"
+            echo "Hello the current build number is ${CIRCLE_BUILD_NUM}"
             pwd
+            ls -al
             mkdir -p codedeploy_artifact
             zip -r csye6225-webapp-${CIRCLE_BUILD_NUM}.zip webapp/librarymanagementsystem/target/librarymanagementsystem-0.0.1-SNAPSHOT.war infrastructure/aws/codedeploy/*.sh appspec.yml
+            ls -al
             mv csye6225-webapp-${CIRCLE_BUILD_NUM}.zip codedeploy_artifact/
+            ls -al
+            pwd
             cd codedeploy_artifact
             ls -al
+            pwd
+            cd ..
             pwd
             ls -al
       - run:
