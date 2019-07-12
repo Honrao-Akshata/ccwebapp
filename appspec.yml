@@ -2,19 +2,17 @@ version: 0.0
 os: linux
 
 
-files:
-  - source: ./webapp/librarymanagementsystem/target/librarymanagementsystem-0.0.1-SNAPSHOT.war
+files:             
+  - source: /ccwebapp/webapp/librarymanagementsystem/target/librarymanagementsystem-0.0.1-SNAPSHOT.war
     destination: /opt/tomcat/latest/webapps
-  - source: ./infrastructure/aws/codedeploy/afterInstall.sh
-    destination: /home/centos
-  - source: ./infrastructure/aws/codedeploy/applicationStart.sh
-    destination: /home/centos
+
 hooks:
   AfterInstall:
-   - location: ./infrastructure/aws/codedeploy/afterInstall.sh
+   - location: ./afterInstall.sh
+
      timeout: 180
      runas: centos
   ApplicationStart:
-   - location: ./infrastructure/aws/codedeploy/applicationStart.sh
+   - location: ./applicationStart.sh
      timeout: 180
-     runas: centos
+runas: centos
