@@ -45,8 +45,6 @@ jobs:
             cd codedeploy_artifact
             ls -al
             pwd
-            cd ..
-            pwd
             ls -al
       - run:
           name: Upload Artifact to S3
