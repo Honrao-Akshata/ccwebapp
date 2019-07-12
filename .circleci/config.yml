@@ -18,7 +18,8 @@ jobs:
             mvn -version
       - run:
           name: Install awscli
-          command: sudo pip install awscli
+          command: |
+            sudo pip install awscli
       - run:
           name: Build Artifact
           command: |
@@ -29,6 +30,14 @@ jobs:
             pwd
             ls -al
             pwd
+      - run:
+          name: make Directory
+          command: |
+            mkdir -p test-results
+            ls -al   
+
+      - store_test_results:
+          path: test-results
       - run:
           name: Zip Artifact
           command: |
