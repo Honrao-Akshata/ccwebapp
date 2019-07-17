@@ -7,14 +7,15 @@ jobs:
           - master
           - assignment5
     docker:
-      - image: circleci/python
+      - image: circleci/openjdk:9-jdk
     steps:
       - checkout
       - run:
           name: Install packages
           command: |
-            sudo apt update
-            sudo apt install openjdk-8-jdk
+            sudo apt-get update && sudo apt-get -y install wget zip unzip python3
+            python3 --version
+            sudo apt install python3-pip
             sudo pip install awscli
       - run:
           name: Build WAR
