@@ -59,7 +59,7 @@
         "SNSTOPICARN":{
                 "Default":"reset_password",
                 "Type": "String"
-            
+
             }
       },
 
@@ -71,7 +71,7 @@
                   "AttributeDefinitions" : [
               {
                 "AttributeName" : "Email",
-                "AttributeType" : "S"   
+                "AttributeType" : "S"
               },
             ],
                   "KeySchema" : [ {"AttributeName" : "Email",
@@ -387,7 +387,8 @@
              "ManagedPolicyArns":[
               {"Ref" : "CodeDeployEC2S3"},
               {"Ref" : "ImageEC2S3"},
-              "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+              "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
+              "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda"
             ],
              "Path": "/",
              "RoleName": "CodeDeployEC2ServiceRole"
