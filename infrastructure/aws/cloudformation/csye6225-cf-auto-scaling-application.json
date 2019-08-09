@@ -32,27 +32,27 @@
       "Subnet1": {
         "Type": "AWS::EC2::Subnet::Id",
         "Description": "Subnet to launch the instance into.",
-        "Default" :  "subnet-c6e9bc9a" 
+        "Default" :  "subnet-c6e9bc9a"
       },
 
       "Subnet2": {
         "Type": "AWS::EC2::Subnet::Id",
         "Description": "Subnet to launch the instance into.",
-        "Default" :  "subnet-86a3ebe1" 
+        "Default" :  "subnet-86a3ebe1"
       },
 
       "Subnet3": {
         "Type": "AWS::EC2::Subnet::Id",
         "Description": "Subnet to launch the instance into.",
-        "Default" :  "subnet-6bfaad45" 
+        "Default" :  "subnet-6bfaad45"
       },
 
-      
+
       "certificateARN":{
          "Type":"String"
       },
 
-      "domainName":{
+      "hostedZoneId":{
          "Type":"String"
 
       },
@@ -74,6 +74,10 @@
       "CFNUser" : {
         "Type": "String",
         "Default": "circleci"
+      },
+      "domainName" : {
+        "Type": "String",
+        "Default": "csye6225-su19-honraoa.me."
       }
    },
 
@@ -83,8 +87,8 @@
          "DependsOn":"loadbalancerSecurityGroup",
          "Properties":{
             "GroupDescription":"Security Group for Web Server",
-            "VpcId" : {"Ref": "VPC"}, 
-            
+            "VpcId" : {"Ref": "VPC"},
+
             "SecurityGroupIngress":[
                {
                   "IpProtocol":"tcp",
@@ -98,22 +102,23 @@
                   "ToPort":8080,
                   "SourceSecurityGroupId" : {"Ref":"loadbalancerSecurityGroup"}
                },
-               {
-                  "IpProtocol":"tcp",
-                  "FromPort":22,
-                  "ToPort":22,
-                  "CidrIp":"0.0.0.0/0"
+                         {
+                 "IpProtocol" : "tcp",
+                 "FromPort": 3306,
+                 "ToPort" : 3306,
+                 "CidrIp" : "0.0.0.0/0"
+
                }
             ]
          }
-         
+
       },
 
       "DBSecurityGroup":{
          "Type":"AWS::EC2::SecurityGroup",
          "Properties":{
             "GroupDescription":"Security Group for DB",
-            "VpcId" : {"Ref": "VPC"}, 
+            "VpcId" : {"Ref": "VPC"},
             "SecurityGroupIngress":[
                {
                   "SourceSecurityGroupId":{
@@ -171,11 +176,11 @@
                      "-csye6225-db-subnetgroup"
                ]
                ]
-            },    
+            },
          "SubnetIds": [ { "Ref" : "Subnet1" },
                         { "Ref" : "Subnet2"} ]
          }
-      }, 
+      },
 
       "DynamoDBTable" : {
         "Type" : "AWS::DynamoDB::Table",
@@ -214,7 +219,7 @@
                      "DeleteOnTermination" : true,
                      "VolumeSize" : 20,
                      "VolumeType" : "gp2"
-                     } 
+                     }
                }
              ],
             "SecurityGroups":[
@@ -259,7 +264,7 @@
                 "cp /tmp/cloudwatchconfig.json /home/centos/",
                 "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/home/centos/cloudwatchconfig.json -s",
                 "sudo service amazon-cloudwatch-agent.service start"
-                     
+
 
 
 
@@ -269,7 +274,7 @@
             },
             "LaunchConfigurationName" : "asg_launch_config"
          }
-   
+
       },
 
       "DBInstance":{
@@ -289,7 +294,7 @@
             "VPCSecurityGroups": [{"Ref":"DBSecurityGroup"}]
 
          }
-      } , 
+      } ,
 
       "autoScalingGroup":{
          "Type" : "AWS::AutoScaling::AutoScalingGroup",
@@ -308,8 +313,8 @@
                   "Value":"codeDeployValue",
                   "PropagateAtLaunch":true
                }
-            ] 
-            
+            ]
+
          }
       },
 
@@ -410,8 +415,8 @@
          "Type" : "AWS::ElasticLoadBalancingV2::Listener",
          "DependsOn":["myTargetGroup","myLoadBalancer"],
          "Properties" : {
-            
-            "DefaultActions" : [{                
+
+            "DefaultActions" : [{
                "Type" : "forward",
                "TargetGroupArn" : { "Ref" : "myTargetGroup" }
               }],
@@ -419,7 +424,7 @@
             "Certificates":[{"CertificateArn":{"Ref":"certificateARN"}}],
             "Port" : "443",
             "Protocol" : "HTTPS"
-                      
+
          }
       },
 
@@ -453,8 +458,8 @@
                "HostedZoneId":{"Fn::GetAtt":["myLoadBalancer","CanonicalHostedZoneID"]},
                "EvaluateTargetHealth":true
             },
-            "Name" : "csye6225-su19-kaurj.me.",
-            "HostedZoneId" : {"Ref":"domainName"},
+            "Name" : {"Ref":"domainName"},
+            "HostedZoneId" : {"Ref":"hostedZoneId"},
             "Type" : "A"
         }
       },
@@ -481,7 +486,7 @@
               }
             }
           },
-          
+
           "CircleCIUploadToS3" : {
             "Type" : "AWS::IAM::ManagedPolicy",
             "Properties" : {
@@ -660,7 +665,7 @@
           }],
           "ServiceRoleArn" : {
             "Fn::GetAtt" : [
-              "CodeDeployServiceRole", 
+              "CodeDeployServiceRole",
               "Arn"
             ]
           },
@@ -679,7 +684,7 @@
 
 
 
-   } 
+   }
 
 },
 

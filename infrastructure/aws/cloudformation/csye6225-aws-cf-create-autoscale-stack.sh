@@ -1,11 +1,11 @@
 #!/bin/sh
 #shell script to create AWS network infrastructures
 
- 
+
  help_me()
 {
 	  echo "Usage:-"
-	  echo "$0 <Application-Stack-Name> <Network-Stack-Name> <AMI-id> <Keyname> <S3CodeDeployBucket> <S3ImageBucket> <User>"
+	  echo "$0 <Application-Stack-Name> <Network-Stack-Name> <AMI-id> <Keyname> <S3CodeDeployBucket> <S3ImageBucket> <User> <domainName>"
 	  exit
 }
 
@@ -16,9 +16,10 @@
 	CODEDEPLOYBUCKET=$5
 	S3IMAGEBUCKET=$6
 	USER=$7
+  domainName=$8
 
-	if [ $# -ne 7 ]
-	then 
+	if [ $# -ne 8 ]
+	then
 		echo -e "You are missing some parameters"
 		help_me
 fi
@@ -74,15 +75,16 @@ aws cloudformation create-stack --stack-name $APP_STACK_NAME --template-body fil
  ParameterKey=S3ImageBucket,ParameterValue=$S3IMAGEBUCKET\
  ParameterKey=CFNUser,ParameterValue=$USER\
  ParameterKey=certificateARN,ParameterValue=$certificateArn\
- ParameterKey=domainName,ParameterValue=$bname\
+ ParameterKey=hostedZoneId,ParameterValue=$bname\
+ ParameterKey=domainName,ParameterValue=$domainName\
  --capabilities CAPABILITY_NAMED_IAM
- 
+
 
 if [ $? -eq 0 ]; then
 echo "Creating progress..."
  aws cloudformation wait stack-create-complete --stack-name $APP_STACK_NAME
  	if [ $? -ne 255 ]; then
- 		
+
   		echo "Stack created successfully!!"
   	else
   		echo "Failure while waiting for stack-create-complete !!"
@@ -92,6 +94,3 @@ else
   echo "Failure while creating stack !!"
 
 fi
-
-
-
